@@ -16,8 +16,8 @@
   "bugs": {
     "url": "https://github.com/coffeewhistle/bamazon/issues"
   },
-  "homepage": "https://github.com/coffeewhistle/bamazon#readme",
   "dependencies": {
+    "inquirer": "^5.2.0",
     "mysql": "^2.15.0"
   }
 }
