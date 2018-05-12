@@ -38,8 +38,6 @@ function displayProducts() {
                 " | Product Name: " + element.product_name +
                 " | Price: " + element.price
             );
-            var newProduct = element.item_id + " | " + element.product_name;
-            productArr.push(newProduct);
         });
         console.log(lineBreak);
         chooseYourAdventure();
@@ -93,7 +91,7 @@ function enterOrder() {
         var prodID = answers.productList.split(" | ")[0];
         var prodName = answers.productList.split(" | ")[1];
         var prodQuant = answers.quantity;
-        console.log("Your order for " + prodQuant + " " + prodName + "(s) has been placed!");
+        console.log("\nYour order for " + prodQuant + " " + prodName + "(s) has been placed!\n");
         chooseYourAdventure();
     });
 }
