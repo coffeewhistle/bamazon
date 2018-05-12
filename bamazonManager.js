@@ -40,15 +40,12 @@ function userInput() {
                 break;
             case "View Low Inventory":
                 viewLowInv();
-                lineBreak();
                 break;
             case "Add to Inventory":
                 addInv();
-                lineBreak();
                 break;
             case "Add New Product":
                 addProd();
-                lineBreak();
                 break;
             default:
                 connection.end();
@@ -75,7 +72,22 @@ function viewProducts() {
 }
 
 function viewLowInv() {
-    console.log("\nHere's the products with low inventory");
+    connection.query("SELECT * FROM products", function (err, res) {
+        console.log("\nHere's the products with low inventory");
+        res.forEach(element => {
+            if (element.stock_quantity < 10) {
+                console.log(
+                    "Item ID: " + element.item_id +
+                    " | Product Name: " + element.product_name +
+                    " | Department: " + element.department_name +
+                    " | Price: " + element.price +
+                    " | Stock: " + element.stock_quantity
+                );
+            }
+        });
+        lineBreak();
+        userInput();
+    });
 }
 
 function addInv() {
