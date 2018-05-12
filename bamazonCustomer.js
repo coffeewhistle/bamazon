@@ -48,7 +48,7 @@ function loadProduct() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         res.forEach(element => {
-            var newProduct = element.item_id + " | " + element.product_name;
+            var newProduct = element.item_id + " | " + element.product_name + " | $" + element.price;
             productArr.push(newProduct);
         });
     });
@@ -74,24 +74,40 @@ function chooseYourAdventure() {
 }
 
 function enterOrder() {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "productList",
-            message: "What product would you like to order?",
-            choices: productArr,
-            pageSize: productArr.length
-        },
-        {
-            type: "text",
-            name: "quantity",
-            message: "How much would you like to order?",
-        }
-    ]).then(function (answers) {
-        var prodID = answers.productList.split(" | ")[0];
-        var prodName = answers.productList.split(" | ")[1];
-        var prodQuant = answers.quantity;
-        console.log("\nYour order for " + prodQuant + " " + prodName + "(s) has been placed!\n");
-        chooseYourAdventure();
+    connection.query("SELECT * FROM products", function (err, res) {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "productList",
+                message: "What product would you like to order?",
+                choices: productArr,
+                pageSize: productArr.length
+            },
+            {
+                type: "text",
+                name: "quantity",
+                message: "How much would you like to order?",
+            }
+        ]).then(function (answers) {
+            var prodID = answers.productList.split(" | ")[0];
+            var prodName = answers.productList.split(" | ")[1];
+            var prodQuant = answers.quantity;
+            if (prodQuant > res[prodID - 1].stock_quantity) {
+                console.log("\nInsufficient quantity!\n");
+            } else {
+                console.log("\nYour order for " + prodQuant + " " + prodName + "(s) has been placed!\nOrder Total: $" + (prodQuant * res[prodID - 1].price) + "\n");
+                connection.query("UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: (res[prodID -1].stock_quantity - prodQuant)
+                        },
+                        {
+                            item_id: prodID
+                        }
+                    ]
+                );
+            }
+            chooseYourAdventure();
+        });
     });
 }
